@@ -19,36 +19,20 @@
           [ngClass]="boolean[r][c] == true && col != ' ' ? 'enemy' : ''"
           [disabled]="!boolean[r][c] && col !== ' ' && !user.includes(col)"
         >
-          <i
-            [ngClass]="{ white: col == 'b', black: col == 'B' }"
-            *ngIf="col == 'b' || col == 'B'"
-            class="fas fa-chess-bishop"
-          ></i>
-          <i
-            [ngClass]="{ white: col == 'p', black: col == 'P' }"
-            *ngIf="col == 'p' || col == 'P'"
-            class="fas fa-chess-pawn"
-          ></i>
-          <i
-            [ngClass]="{ white: col == 'r', black: col == 'R' }"
-            *ngIf="col == 'r' || col == 'R'"
-            class="fas fa-chess-rook"
-          ></i>
-          <i
-            [ngClass]="{ white: col == 'n', black: col == 'N' }"
-            *ngIf="col == 'n' || col == 'N'"
-            class="fas fa-chess-knight"
-          ></i>
-          <i
-            [ngClass]="{ white: col == 'k', black: col == 'K' }"
-            *ngIf="col == 'k' || col == 'K'"
-            class="fas fa-chess-king"
-          ></i>
-          <i
-            [ngClass]="{ white: col == 'q', black: col == 'Q' }"
-            *ngIf="col == 'q' || col == 'Q'"
-            class="fas fa-chess-queen"
-          ></i>
+          <img
+            *ngIf="blacks.includes(col)"
+            src="../../../assets/images/{{ col | lowercase }}.png"
+            width="30px"
+            alt=""
+          />
+          <img
+            *ngIf="whites.includes(col)"
+            src="../../../assets/images/{{ col | lowercase }}{{
+              col | lowercase
+            }}.png"
+            width="30px"
+            alt=""
+          />
         </button>
       </td>
     </tr>
