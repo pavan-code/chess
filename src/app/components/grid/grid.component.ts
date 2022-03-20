@@ -236,7 +236,88 @@ export class GridComponent implements OnInit {
     this.blackPawnMoves = moves;
     // console.log(moves);
   }
-  getBlackKingMoves(x: number, y: number) {}
+  getBlackKingMoves(x: number, y: number) {
+    if (x - 1 >= 0) {
+      if (this.grid[x - 1][y] === ' ') {
+        this.boolean[x - 1][y] = true;
+      } else {
+        if (!this.blacks.includes(this.grid[x - 1][y])) {
+          this.boolean[x - 1][y] = true;
+        }
+      }
+    }
+    // right
+    if (y + 1 < 8) {
+      if (this.grid[x][y + 1] === ' ') {
+        this.boolean[x][y + 1] = true;
+      } else {
+        if (!this.blacks.includes(this.grid[x][y + 1])) {
+          this.boolean[x][y + 1] = true;
+        }
+      }
+    }
+    // bottom
+
+    if (x + 1 < 8) {
+      if (this.grid[x + 1][y] === ' ') {
+        this.boolean[x + 1][y] = true;
+      } else {
+        if (!this.blacks.includes(this.grid[x + 1][y])) {
+          this.boolean[x + 1][y] = true;
+        }
+      }
+    }
+    // left
+    if (y - 1 >= 0) {
+      if (this.grid[x][y - 1] === ' ') {
+        this.boolean[x][y - 1] = true;
+      } else {
+        if (!this.blacks.includes(this.grid[x][y - 1])) {
+          this.boolean[x][y - 1] = true;
+        }
+      }
+    }
+    if (x - 1 >= 0 && y + 1 < 8) {
+      if (this.grid[x - 1][y + 1] === ' ') {
+        this.boolean[x - 1][y + 1] = true;
+      } else {
+        if (!this.blacks.includes(this.grid[x - 1][y + 1])) {
+          this.boolean[x - 1][y + 1] = true;
+        }
+      }
+    }
+    // right bottom
+    if (y + 1 < 8 && x + 1 < 8) {
+      if (this.grid[x + 1][y + 1] === ' ') {
+        this.boolean[x + 1][y + 1] = true;
+      } else {
+        if (!this.blacks.includes(this.grid[x + 1][y + 1])) {
+          this.boolean[x + 1][y + 1] = true;
+        }
+      }
+    }
+    // left bottom
+
+    if (x + 1 < 8 && y - 1 >= 0) {
+      if (this.grid[x + 1][y - 1] === ' ') {
+        this.boolean[x + 1][y - 1] = true;
+      } else {
+        if (!this.blacks.includes(this.grid[x + 1][y - 1])) {
+          this.boolean[x + 1][y - 1] = true;
+        }
+      }
+    }
+    // top left
+    if (y - 1 >= 0 && x - 1 >= 0) {
+      if (this.grid[x - 1][y - 1] === ' ') {
+        this.boolean[x - 1][y - 1] = true;
+      } else {
+        if (!this.blacks.includes(this.grid[x - 1][y - 1])) {
+          this.boolean[x - 1][y - 1] = true;
+        }
+      }
+    }
+  }
 
   getWhiteRookMoves(x: number, y: number) {
     // top
