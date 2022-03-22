@@ -1,8 +1,17 @@
 <div class="container" style="text-align: center">
   <h2 *ngIf="role">White turn</h2>
   <h2 *ngIf="!role">Black turn</h2>
+
   <table>
+    <!-- <tr>
+      <td *ngFor="let c of [0, 0, 1, 2, 3, 4, 5, 6, 7]">
+        {{ c }}
+      </td>
+    </tr> -->
     <tr *ngFor="let row of grid; let r = index">
+      <!-- <td>
+        {{ r }}
+      </td> -->
       <td
         [ngClass]="boolean[r][c] ? 'tdpath' : ''"
         *ngFor="let col of row; let c = index"
@@ -13,24 +22,38 @@
         <!-- {{ !user.includes(col) }} {{ col }} -->
         <!-- {{ boolean[r][c] }} -->
         <!-- [disabled]="boolean[r][c] == false && pause == true && col == ' '" -->
+        <!-- {{ ["k", "K"].includes(copycontent) }} -->
+        <!-- {{ boolean[r][c] }} -->
+        <!-- <span *ngIf="['k', 'K'].includes(copycontent)">{{
+          paths.includes(r.toString() + c.toString()).toString()[0]
+        }}</span> -->
         <button
           [ngClass]="boolean[r][c] ? 'path' : ''"
           (click)="selected(col, r, c, boolean[r][c])"
           [ngClass]="boolean[r][c] == true && col != ' ' ? 'enemy' : ''"
           [disabled]="!boolean[r][c] && col !== ' ' && !user.includes(col)"
+          [ngClass]="
+            ['k', 'K'].includes(copycontent) &&
+            boolean[r][c] &&
+            paths.includes(r.toString() + c.toString())
+              ? 'threat'
+              : ''
+          "
         >
+          <!-- {{ r.toString() + c.toString() }} -->
           <img
             *ngIf="blacks.includes(col)"
             src="../../../assets/images/{{ col | lowercase }}.png"
             width="30px"
             alt=""
           />
+
           <img
             *ngIf="whites.includes(col)"
             src="../../../assets/images/{{ col | lowercase }}{{
               col | lowercase
             }}.png"
-            width="30px"
+            width="45px"
             alt=""
           />
         </button>
