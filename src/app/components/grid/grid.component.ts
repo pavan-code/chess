@@ -45,6 +45,11 @@ export class GridComponent implements OnInit {
   user: string[] = this.whites;
   role: boolean = true;
   paths: string[] = [];
+  kingX: number = -1;
+  kingY: number = -1;
+
+  isCheck: boolean = false;
+
   ngOnInit(): void {
     if (this.role) this.paths = this.blackPaths;
     else this.paths = this.whitePaths;
@@ -66,6 +71,8 @@ export class GridComponent implements OnInit {
 
     if (bool == false) {
       console.warn('after copied: ' + this.paths);
+      console.log('black: ' + this.blackPaths);
+      console.log('white: ' + this.whitePaths);
 
       this.copycontent = val;
 
@@ -127,17 +134,21 @@ export class GridComponent implements OnInit {
       this.grid[this.prevX][this.prevY] = ' ';
       this.role = !this.role;
 
+      console.error('after kept: ' + this.paths);
+      console.log('black: ' + this.blackPaths);
+      console.log('white: ' + this.whitePaths);
       this.paths = [];
       if (!this.role) {
         this.user = this.blacks;
         // this.paths = this.whitePaths;
         this.paths = this.getAllWhiteMoves();
+        console.log('adsfadfas: ' + this.paths);
+        this.check(this.role, this.paths);
       } else {
         this.user = this.whites;
         // this.paths = this.blackPaths;
         this.paths = this.getAllBlackMoves();
       }
-      console.error('after kept: ' + this.paths);
 
       // this.blackPaths = [];
       // this.whitePaths = [];
@@ -150,6 +161,30 @@ export class GridComponent implements OnInit {
     }
   }
 
+  check(role: boolean, paths: string[]): void {
+    console.log(this.grid);
+
+    let kingIndex = '';
+    if (role === false) {
+      this.grid.forEach((row, i) => {
+        row.forEach((col, j) => {
+          if (col === 'K') {
+            this.kingX = i;
+            this.kingY = j;
+            kingIndex += i;
+            kingIndex += j;
+          }
+        });
+      });
+      console.log(kingIndex);
+
+      if (paths.includes(kingIndex)) {
+        alert('check');
+        this.isCheck = true;
+      }
+    }
+  }
+
   getAllWhiteMoves() {
     this.whitePaths = [];
     let moves: number[][] = [];
@@ -158,35 +193,31 @@ export class GridComponent implements OnInit {
         if (this.grid[i][j] === 'p') {
           moves = this.getWhitePawnMoves(i, j);
           this.copyToWhite(moves);
-          console.log('w pawns:' + moves);
-        }
-        // else if (this.grid[i][j] === 'r') {
-        //   moves = this.getWhiteRookMoves(i, j);
-        //   this.copyToWhite(moves);
-        //   console.log('w rooks: ' + moves);
-        // }
-        // else if (this.grid[i][j] === 'b') {
-        //   moves = this.getWhiteBishopMoves(i, j);
-        //   this.copyToWhite(moves);
-        //   console.log('bishops: ' + moves);
-        // } else if (this.grid[i][j] === 'q') {
-        //   moves = this.getWhiteQueenMoves(i, j);
-        //   this.copyToWhite(moves);
-        //   console.log('queens: ' + moves);
-        // }
-        else if (this.grid[i][j] === 'k') {
+          // console.log('w pawns:' + moves);
+        } else if (this.grid[i][j] === 'r') {
+          moves = this.getWhiteRookMoves(i, j);
+          this.copyToWhite(moves);
+          // console.log('w rooks: ' + moves);
+        } else if (this.grid[i][j] === 'b') {
+          moves = this.getWhiteBishopMoves(i, j);
+          this.copyToWhite(moves);
+          // console.log('bishops: ' + moves);
+        } else if (this.grid[i][j] === 'q') {
+          moves = this.getWhiteQueenMoves(i, j);
+          this.copyToWhite(moves);
+          // console.log('queens: ' + moves);
+        } else if (this.grid[i][j] === 'k') {
           moves = this.getWhiteKingMoves(i, j);
           this.copyToWhite(moves);
-          console.log('w kings: ' + moves);
+          // console.log('w kings: ' + moves);
+        } else if (this.grid[i][j] === 'n') {
+          moves = this.getWhiteKnightMoves(i, j);
+          this.copyToWhite(moves);
+          // console.log('knights: ' + moves);
         }
-        // else if (this.grid[i][j] === 'n') {
-        //   moves = this.getWhiteKnightMoves(i, j);
-        //   this.copyToWhite(moves);
-        //   console.log('knights: ' + moves);
-        // }
       }
     }
-    console.log('whites:' + this.whitePaths);
+    // console.log('whites:' + this.whitePaths);
     return this.whitePaths;
   }
 
@@ -212,31 +243,29 @@ export class GridComponent implements OnInit {
         if (this.grid[i][j] === 'P') {
           moves = this.getBlackPawnMoves(i, j);
           this.copyToBlack(moves);
-          console.log('b pawns:' + moves);
+          // console.log('b pawns:' + moves);
+        } else if (this.grid[i][j] === 'R') {
+          moves = this.getBlackRookMoves(i, j);
+          this.copyToBlack(moves);
+          // console.log('rooks: ' + moves);
+        } else if (this.grid[i][j] === 'B') {
+          moves = this.getBlackBishopMoves(i, j);
+          this.copyToBlack(moves);
+          // console.log('bishops: ' + moves);
+        } else if (this.grid[i][j] === 'Q') {
+          moves = this.getBlackQueenMoves(i, j);
+          this.copyToBlack(moves);
+          // console.log('queens: ' + moves);
         }
-        // else if (this.grid[i][j] === 'R') {
-        //   moves = this.getBlackRookMoves(i, j);
-        //   this.copyToBlack(moves);
-        //   console.log('rooks: ' + moves);
-        // } else if (this.grid[i][j] === 'B') {
-        //   moves = this.getBlackBishopMoves(i, j);
-        //   this.copyToBlack(moves);
-        //   console.log('bishops: ' + moves);
-        // } else if (this.grid[i][j] === 'Q') {
-        //   moves = this.getBlackQueenMoves(i, j);
-        //   this.copyToBlack(moves);
-        //   console.log('queens: ' + moves);
-        // }
         if (this.grid[i][j] === 'K') {
           moves = this.getBlackKingMoves(i, j);
           this.copyToBlack(moves);
-          console.log('b kings: ' + moves);
+          // console.log('b kings: ' + moves);
+        } else if (this.grid[i][j] === 'N') {
+          moves = this.getBlackKnightMoves(i, j);
+          this.copyToBlack(moves);
+          // console.log('knights: ' + moves);
         }
-        // else if (this.grid[i][j] === 'N') {
-        //   moves = this.getBlackKnightMoves(i, j);
-        //   this.copyToBlack(moves);
-        //   console.log('knights: ' + moves);
-        // }
       }
     }
     // console.log('blacks:' + this.blackPaths);
@@ -543,73 +572,8 @@ export class GridComponent implements OnInit {
           this.boolean[i][y] = true;
         } else {
           if (!this.whites.includes(this.grid[i][y])) {
-            moves.push([i, y]);
-            this.boolean[i][y] = true;
-          }
-          break;
-        }
-      }
-    }
-    // right
-    if (y + 1 < 8) {
-      for (let j = y + 1; j < 8; j++) {
-        if (this.grid[x][j] === ' ') {
-          moves.push([x, j]);
-          this.boolean[x][j] = true;
-        } else {
-          if (!this.whites.includes(this.grid[x][j])) {
-            moves.push([x, j]);
-            this.boolean[x][j] = true;
-          }
-          break;
-        }
-      }
-    }
-    // bottom
-
-    if (x + 1 < 8) {
-      for (let i = x + 1; i < 8; i++) {
-        if (this.grid[i][y] === ' ') {
-          moves.push([i, y]);
-          this.boolean[i][y] = true;
-        } else {
-          if (!this.whites.includes(this.grid[i][y])) {
-            moves.push([i, y]);
-            this.boolean[i][y] = true;
-          }
-          break;
-        }
-      }
-    }
-    // left
-    if (y - 1 >= 0) {
-      for (let j = y - 1; j >= 0; j--) {
-        if (this.grid[x][j] === ' ') {
-          moves.push([x, j]);
-          this.boolean[x][j] = true;
-        } else {
-          if (!this.whites.includes(this.grid[x][j])) {
-            moves.push([x, j]);
-            this.boolean[x][j] = true;
-          }
-          break;
-        }
-      }
-    }
-    return moves;
-  }
-
-  getBlackRookMoves(x: number, y: number) {
-    const moves = [];
-    // top
-    if (x - 1 >= 0) {
-      for (let i = x - 1; i >= 0; i--) {
-        if (this.grid[i][y] === ' ') {
-          moves.push([i, y]);
-          this.boolean[i][y] = true;
-        } else {
-          if (!this.blacks.includes(this.grid[i][y])) {
-            if (this.grid[i][y] === 'k') {
+            if (this.grid[i][y] === 'K') {
+              moves.push([i, y]);
               for (let k = i - 1; i >= 0; i--) {
                 if (this.grid[k][y] === ' ') {
                   moves.push([k, y]);
@@ -617,9 +581,10 @@ export class GridComponent implements OnInit {
                   break;
                 }
               }
+            } else {
+              // moves.push([i, y]);
+              this.boolean[i][y] = true;
             }
-            moves.push([i, y]);
-            this.boolean[i][y] = true;
           }
           break;
         }
@@ -632,8 +597,9 @@ export class GridComponent implements OnInit {
           moves.push([x, j]);
           this.boolean[x][j] = true;
         } else {
-          if (!this.blacks.includes(this.grid[x][j])) {
-            if (this.grid[x][j] === 'k') {
+          if (!this.whites.includes(this.grid[x][j])) {
+            if (this.grid[x][j] === 'K') {
+              moves.push([x, j]);
               for (let k = j + 1; k < 8; k++) {
                 if (this.grid[x][k] === ' ') {
                   moves.push([x, k]);
@@ -657,8 +623,118 @@ export class GridComponent implements OnInit {
           moves.push([i, y]);
           this.boolean[i][y] = true;
         } else {
+          if (!this.whites.includes(this.grid[i][y])) {
+            if (this.grid[i][y] === 'K') {
+              moves.push([i, y]);
+              for (let k = i + 1; k < 8; k++) {
+                if (this.grid[k][y] === ' ') {
+                  moves.push([k, y]);
+                } else {
+                  break;
+                }
+              }
+            }
+            moves.push([i, y]);
+            this.boolean[i][y] = true;
+          } else {
+            moves.push([i, y]);
+          }
+          break;
+        }
+      }
+    }
+    // left
+    if (y - 1 >= 0) {
+      for (let j = y - 1; j >= 0; j--) {
+        if (this.grid[x][j] === ' ') {
+          moves.push([x, j]);
+          this.boolean[x][j] = true;
+        } else {
+          if (!this.whites.includes(this.grid[x][j])) {
+            if (this.grid[x][j] === 'K') {
+              moves.push([x, j]);
+              for (let k = j - 1; k >= 0; k--) {
+                if (this.grid[x][k] === ' ') {
+                  moves.push([x, k]);
+                } else {
+                  break;
+                }
+              }
+            }
+            moves.push([x, j]);
+            this.boolean[x][j] = true;
+          }
+          break;
+        }
+      }
+    }
+    return moves;
+  }
+
+  getBlackRookMoves(x: number, y: number) {
+    const moves = [];
+    // top
+    if (x - 1 >= 0) {
+      for (let i = x - 1; i >= 0; i--) {
+        if (this.grid[i][y] === ' ') {
+          moves.push([i, y]);
+          this.boolean[i][y] = true;
+        } else {
           if (!this.blacks.includes(this.grid[i][y])) {
             if (this.grid[i][y] === 'k') {
+              moves.push([i, y]);
+              for (let k = i - 1; i >= 0; i--) {
+                if (this.grid[k][y] === ' ') {
+                  moves.push([k, y]);
+                } else {
+                  break;
+                }
+              }
+            } else {
+              this.boolean[i][y] = true;
+              // moves.push([i, y]);
+            }
+          }
+          break;
+        }
+      }
+    }
+    // right
+    if (y + 1 < 8) {
+      for (let j = y + 1; j < 8; j++) {
+        if (this.grid[x][j] === ' ') {
+          moves.push([x, j]);
+          this.boolean[x][j] = true;
+        } else {
+          if (!this.blacks.includes(this.grid[x][j])) {
+            if (this.grid[x][j] === 'k') {
+              moves.push([x, j]);
+              for (let k = j + 1; k < 8; k++) {
+                if (this.grid[x][k] === ' ') {
+                  moves.push([x, k]);
+                } else {
+                  break;
+                }
+              }
+            }
+            // moves.push([x, j]);
+            this.boolean[x][j] = true;
+          }
+          break;
+        }
+      }
+    }
+    // bottom
+
+    if (x + 1 < 8) {
+      for (let i = x + 1; i < 8; i++) {
+        if (this.grid[i][y] === ' ') {
+          moves.push([i, y]);
+          this.boolean[i][y] = true;
+        } else {
+          if (!this.blacks.includes(this.grid[i][y])) {
+            if (this.grid[i][y] === 'k') {
+              moves.push([i, y]);
               for (let k = i + 1; k < 8; k++) {
                 if (this.grid[k][y] === ' ') {
                   moves.push([k, y]);
@@ -683,6 +759,7 @@ export class GridComponent implements OnInit {
         } else {
           if (!this.blacks.includes(this.grid[x][j])) {
             if (this.grid[x][j] === 'k') {
+              moves.push([x, j]);
               for (let k = j - 1; k >= 0; k--) {
                 if (this.grid[x][k] === ' ') {
                   moves.push([x, k]);
@@ -691,7 +768,7 @@ export class GridComponent implements OnInit {
                 }
               }
             }
-            moves.push([x, j]);
+            // moves.push([x, j]);
             this.boolean[x][j] = true;
           }
           break;
@@ -711,8 +788,19 @@ export class GridComponent implements OnInit {
           this.boolean[i][j] = true;
         } else {
           if (!this.whites.includes(this.grid[i][j])) {
-            moves.push([i, j]);
+            if (this.grid[i][j] === 'K') {
+              moves.push([i, j]);
+              for (let k = i - 1, l = j + 1; k >= 0 && l < 8; k--, l++) {
+                if (this.grid[k][l] === ' ') {
+                  moves.push([k, l]);
+                } else {
+                  break;
+                }
+              }
+            }
             this.boolean[i][j] = true;
+          } else {
+            moves.push([i, j]);
           }
           break;
         }
@@ -726,8 +814,20 @@ export class GridComponent implements OnInit {
           this.boolean[i][j] = true;
         } else {
           if (!this.whites.includes(this.grid[i][j])) {
-            moves.push([i, j]);
+            if (this.grid[i][j] === 'K') {
+              moves.push([i, j]);
+              for (let k = j + 1, l = i + 1; k < 8 && l < 8; k++, l++) {
+                if (this.grid[l][k] === ' ') {
+                  moves.push([l, k]);
+                } else {
+                  break;
+                }
+              }
+            }
+
             this.boolean[i][j] = true;
+          } else {
+            moves.push([i, j]);
           }
           break;
         }
@@ -742,8 +842,20 @@ export class GridComponent implements OnInit {
           this.boolean[i][j] = true;
         } else {
           if (!this.whites.includes(this.grid[i][j])) {
-            moves.push([i, j]);
+            if (this.grid[i][j] === 'K') {
+              moves.push([i, j]);
+              for (let k = i + 1, l = j - 1; k < 8 && l >= 0; k++, l--) {
+                if (this.grid[k][l] === ' ') {
+                  moves.push([k, l]);
+                } else {
+                  break;
+                }
+              }
+            }
+            // moves.push([i, j]);
             this.boolean[i][j] = true;
+          } else {
+            moves.push([i, j]);
           }
           break;
         }
@@ -757,8 +869,19 @@ export class GridComponent implements OnInit {
           this.boolean[i][j] = true;
         } else {
           if (!this.whites.includes(this.grid[i][j])) {
-            moves.push([i, j]);
+            if (this.grid[i][j] === 'K') {
+              moves.push([i, j]);
+              for (let k = j - 1, l = i - 1; k >= 0 && l >= 0; k--, l--) {
+                if (this.grid[l][k] === ' ') {
+                  moves.push([l, k]);
+                } else {
+                  break;
+                }
+              }
+            }
             this.boolean[i][j] = true;
+          } else {
+            moves.push([i, j]);
           }
           break;
         }

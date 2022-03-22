@@ -39,8 +39,9 @@
               ? 'threat'
               : ''
           "
+          [ngClass]="isCheck && r == kingX && c == kingY ? 'check' : ''"
         >
-          <!-- {{ r.toString() + c.toString() }} -->
+          {{ r.toString() + c.toString() }}
           <img
             *ngIf="blacks.includes(col)"
             src="../../../assets/images/{{ col | lowercase }}.png"
