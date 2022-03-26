@@ -29,7 +29,7 @@
         }}</span> -->
         <button
           [ngClass]="boolean[r][c] ? 'path' : ''"
-          (click)="selected(col, r, c, boolean[r][c])"
+          (click)="clicked(col, r, c, boolean[r][c])"
           [ngClass]="boolean[r][c] == true && col != ' ' ? 'enemy' : ''"
           [disabled]="!boolean[r][c] && col !== ' ' && !user.includes(col)"
           [ngClass]="
@@ -39,9 +39,11 @@
               ? 'threat'
               : ''
           "
-          [ngClass]="isCheck && r == kingX && c == kingY ? 'check' : ''"
+          [ngClass]="
+            isCheck && r == kingX && c == kingY && col !== ' ' ? 'check' : ''
+          "
         >
-          {{ r.toString() + c.toString() }}
+          <!-- {{ r.toString() + c.toString() }} -->
           <img
             *ngIf="blacks.includes(col)"
             src="../../../assets/images/{{ col | lowercase }}.png"

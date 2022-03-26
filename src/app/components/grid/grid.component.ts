@@ -51,8 +51,8 @@ export class GridComponent implements OnInit {
   isCheck: boolean = false;
 
   ngOnInit(): void {
-    if (this.role) this.paths = this.blackPaths;
-    else this.paths = this.whitePaths;
+    // if (this.role) this.paths = this.blackPaths;
+    // else this.paths = this.whitePaths;
     // console.log('paths: ' + this.paths);
   }
 
@@ -66,13 +66,120 @@ export class GridComponent implements OnInit {
       for (let j = 0; j < 8; j++) this.boolean[i][j] = false;
   }
 
+  clicked(val: string, x: number, y: number, bool: boolean) {
+    if (this.isCheck) {
+      this.clickedWhenCheck(val, x, y, bool);
+    } else {
+      this.selected(val, x, y, bool);
+    }
+  }
+
+  clickedWhenCheck(val: string, x: number, y: number, bool: boolean) {
+    if (bool == false) {
+      this.copycontent = val;
+      this.paths = [];
+
+      if (!this.role) {
+        this.user = this.blacks;
+        this.paths = this.getAllWhiteMoves();
+      } else {
+        this.user = this.whites;
+        this.paths = this.getAllBlackMoves();
+      }
+
+      this.prevX = x;
+      this.prevY = y;
+
+      this.pause = true;
+
+      this.reset();
+
+      if (val === 'p') {
+        this.getWhitePawnMoves(x, y);
+      } else if (val === 'P') {
+        this.getBlackPawnMoves(x, y);
+      } else if (val === 'r') {
+        this.getWhiteRookMoves(x, y);
+      } else if (val === 'R') {
+        this.getBlackRookMoves(x, y);
+      } else if (val === 'b') {
+        this.getWhiteBishopMoves(x, y);
+      } else if (val === 'B') {
+        this.getBlackBishopMoves(x, y);
+      } else if (val === 'q') {
+        this.getWhiteQueenMoves(x, y);
+      } else if (val === 'Q') {
+        this.getBlackQueenMoves(x, y);
+      } else if (val === 'k') {
+        this.getWhiteKingMoves(x, y);
+      } else if (val === 'K') {
+        this.getBlackKingMoves(x, y);
+      } else if (val === 'n') {
+        this.getWhiteKnightMoves(x, y);
+      } else if (val === 'N') {
+        this.getBlackKnightMoves(x, y);
+      }
+    } else {
+      this.pause = false;
+      this.grid[x][y] = this.copycontent;
+      this.grid[this.prevX][this.prevY] = ' ';
+
+      if (!this.role) {
+        // this.paths = this.whitePaths;
+        this.paths = this.getAllWhiteMoves();
+        console.log('wc: ' + this.paths);
+        this.check(this.role, this.paths);
+        if (this.isCheck) {
+          this.grid[this.prevX][this.prevY] = this.copycontent;
+          this.grid[x][y] = ' ';
+          console.log('check not prevented' + this.isCheck + ' ' + this.role);
+          let paths = this.checkMate(this.role);
+          if (paths.length === 0) {
+            alert('checkmate');
+          }
+          this.reset();
+        } else {
+          this.isCheck = false;
+          this.role = !this.role;
+          if (this.role) this.user = this.whites;
+          else this.user = this.blacks;
+          console.log('check prevented' + this.isCheck + ' ' + this.role);
+          let paths = this.checkMate(this.role);
+          if (paths.length === 0) {
+            alert('checkmate');
+          }
+          this.reset();
+        }
+      } else {
+        // this.user = this.whites;
+        // this.paths = this.blackPaths;
+        this.paths = this.getAllBlackMoves();
+        console.log('bc: ' + this.paths);
+        this.check(this.role, this.paths);
+        if (this.isCheck) {
+          this.grid[this.prevX][this.prevY] = this.copycontent;
+          this.grid[x][y] = ' ';
+          console.log('check not prevented' + this.isCheck + ' ' + this.role);
+          this.reset();
+        } else {
+          this.isCheck = false;
+          this.role = !this.role;
+          if (this.role) this.user = this.whites;
+          else this.user = this.blacks;
+          console.log('check prevented' + this.isCheck + ' ' + this.role);
+          this.reset();
+        }
+      }
+    }
+  }
+
   selected(val: string, x: number, y: number, bool: boolean): void {
     // console.log(this.boolean);
 
     if (bool == false) {
-      console.warn('after copied: ' + this.paths);
-      console.log('black: ' + this.blackPaths);
-      console.log('white: ' + this.whitePaths);
+      // console.warn('after copied: ' + this.paths);
+      // console.log('black: ' + this.blackPaths);
+      // console.log('white: ' + this.whitePaths);
 
       this.copycontent = val;
 
@@ -134,21 +241,23 @@ export class GridComponent implements OnInit {
       this.grid[this.prevX][this.prevY] = ' ';
       this.role = !this.role;
 
-      console.error('after kept: ' + this.paths);
-      console.log('black: ' + this.blackPaths);
-      console.log('white: ' + this.whitePaths);
+      // console.error('after kept: ' + this.paths);
+      // console.log('black: ' + this.blackPaths);
+      // console.log('white: ' + this.whitePaths);
       this.paths = [];
       if (!this.role) {
         this.user = this.blacks;
         // this.paths = this.whitePaths;
         this.paths = this.getAllWhiteMoves();
-        console.log('adsfadfas: ' + this.paths);
+        // console.log('adsfadfas: ' + this.paths);
         this.check(this.role, this.paths);
       } else {
         this.user = this.whites;
         // this.paths = this.blackPaths;
         this.paths = this.getAllBlackMoves();
+        this.check(this.role, this.paths);
       }
+      console.log('ischeck ' + this.isCheck);
 
       // this.blackPaths = [];
       // this.whitePaths = [];
@@ -161,8 +270,40 @@ export class GridComponent implements OnInit {
     }
   }
 
+  checkMate(role: boolean) {
+    if (role === false) {
+      let blackkingMoves: number[][] = this.getBlackKingMoves(
+        this.kingX,
+        this.kingY
+      );
+      let whitefuture: string[] = this.getAllWhiteMoves();
+      // console.log('black king moves: ' + blackkingMoves);
+      let paths = blackkingMoves.filter((val) => {
+        let str = val[0] + '' + val[1];
+        return !whitefuture.includes(str);
+      });
+      // this.clickedWhenCheck('K', this.kingX, this.kingY, false);
+      console.log(paths);
+      return paths;
+    } else {
+      let whitekingMoves: number[][] = this.getWhiteKingMoves(
+        this.kingX,
+        this.kingY
+      );
+      let blackfuture: string[] = this.getAllBlackMoves();
+      // console.log('black king moves: ' + whitekingMoves);
+      let paths = whitekingMoves.filter((val) => {
+        let str = val[0] + '' + val[1];
+        return !blackfuture.includes(str);
+      });
+      // console.log('white king moves: ' + whitekingMoves);
+      // console.log(this.boolean);
+      return paths;
+    }
+  }
+
   check(role: boolean, paths: string[]): void {
-    console.log(this.grid);
+    // console.log(this.grid);
 
     let kingIndex = '';
     if (role === false) {
@@ -176,11 +317,30 @@ export class GridComponent implements OnInit {
           }
         });
       });
-      console.log(kingIndex);
+      // console.log(kingIndex);
 
       if (paths.includes(kingIndex)) {
-        alert('check');
         this.isCheck = true;
+      } else {
+        this.isCheck = false;
+      }
+    } else {
+      this.grid.forEach((row, i) => {
+        row.forEach((col, j) => {
+          if (col === 'k') {
+            this.kingX = i;
+            this.kingY = j;
+            kingIndex += i;
+            kingIndex += j;
+          }
+        });
+      });
+      // console.log(kingIndex);
+
+      if (paths.includes(kingIndex)) {
+        this.isCheck = true;
+      } else {
+        this.isCheck = false;
       }
     }
   }
